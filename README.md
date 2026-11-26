@@ -80,13 +80,24 @@ cp .env.example .env       # Linux o macOS
 | Variable | Descripción | Ejemplo |
 | --- | --- | --- |
 | `PORT` | Puerto en el que escucha la API | `10000` |
-| `MONGODB_URI` | Cadena de conexión a la base de datos | `mongodb://127.0.0.1:27017/rest_api` |
+| `MONGODB_URI` | Cadena de conexión al clúster de MongoDB Atlas | `mongodb+srv://usuario:clave@cluster0.xxxxx.mongodb.net/rest_api?retryWrites=true&w=majority` |
 
-Ejemplo con MongoDB Atlas:
+La base de datos está alojada en **MongoDB Atlas**. Para reproducir la conexión:
+
+1. Crear un clúster gratuito **M0** en https://www.mongodb.com/cloud/atlas
+2. Crear un usuario en **Database Access**
+3. Permitir el acceso desde la red en **Network Access**
+4. Copiar la cadena desde **Connect → Drivers**
 
 ```env
 PORT=10000
 MONGODB_URI=mongodb+srv://usuario:clave@cluster0.xxxxx.mongodb.net/rest_api?retryWrites=true&w=majority
+```
+
+Para trabajar con una instancia local, la cadena sería:
+
+```env
+MONGODB_URI=mongodb://127.0.0.1:27017/rest_api
 ```
 
 ### 3.4 Ejecución
@@ -398,22 +409,29 @@ Los registros creados pueden comprobarse en la base de datos con cualquiera de e
 
 **Desde MongoDB Compass**
 
-1. Conectar con la cadena `mongodb://127.0.0.1:27017` o con la cadena de Atlas.
+1. Conectar con la cadena `mongodb+srv://` del clúster de Atlas.
 2. Seleccionar la base `rest_api` y la colección `posts`.
 3. Verificar los documentos creados desde Postman.
 
-**Desde la consola de MongoDB**
-
-```javascript
-use rest_api
-db.posts.find().pretty()
-```
-
-**Desde mongosh en un clúster de Atlas**
+**Desde mongosh**
 
 ```javascript
 use rest_api
 db.posts.find()
+```
+
+Resultado obtenido durante el testing:
+
+```javascript
+[
+  {
+    _id: ObjectId("6b07c3e98ff716f6aa73e243"),
+    tittle: "Post creado desde Postman",
+    description: "Registro enviado en el testing de la API",
+    date: ISODate("2026-11-26T05:30:17.334Z"),
+    __v: 0
+  }
+]
 ```
 
 ---
